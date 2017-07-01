@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 3444886495
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: blue.dlc
+      Dependencies: {}
+    Info_1:
+      Name: myassets.dlc
+      Dependencies: {}

@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 692382737
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: blue.dlc.cube
+      Dependencies: {}
