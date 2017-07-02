@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3942177433
+CRC: 1044354468
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a94583523b9412a54f7f5d3b4466e2e8
+    Hash: 797d2e1e76a7f19e22551cd03688423b
   TypeTreeHash:
     serializedVersion: 2
-    Hash: fd5e828166d2afb60548f5e69ebbe212
+    Hash: 0dfec45243e13c415ac5674c220afef2
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -23,13 +23,13 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 48
   Script: {instanceID: 0}
-- Class: 114
-  Script: {fileID: 11500000, guid: 4ca6386a2908f1a4aa6a6fe22cb9214f, type: 3}
-- Class: 115
-  Script: {instanceID: 0}
-- Class: 136
+- Class: 135
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/Capsule.prefab
-- Assets/Materials/blue.mat
+- Assets/Prefabs/jingmai_quanshen.prefab
+- Assets/Prefabs/lungs_xueguan.prefab
+- Assets/Prefabs/fengrui.prefab
+- Assets/Prefabs/heart_model_vessel.prefab
+- Assets/Prefabs/heart_movie.prefab
+- Assets/Prefabs/dongmai_quanshen.prefab
 Dependencies: []

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3793703399
+CRC: 1282254183
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e31c80a5a50e87a8a3f229ed8fddf7a6
+    Hash: c2390154d49e3bb5f88b6e64f918e3ff
   TypeTreeHash:
     serializedVersion: 2
     Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
@@ -11,5 +11,4 @@ HashAppended: 0
 ClassTypes: []
 Assets:
 - Assets/Scenes/cube.unity
-Dependencies:
-- D:/Projects/AssetBundle/Assets/AssetBundlesWindows/myassets.dlc
+Dependencies: []

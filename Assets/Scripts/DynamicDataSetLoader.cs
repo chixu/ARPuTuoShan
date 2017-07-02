@@ -54,7 +54,7 @@ public class DynamicDataSetLoader : MonoBehaviour
 //				if (tb.name == "New Game Object") {
 //				 
 //					// change generic name to include trackable name
-					tb.gameObject.name = ++counter + ":DynamicImageTarget-" + tb.TrackableName;
+					tb.gameObject.name = "DynamicImageTarget-" + tb.TrackableName;
 //				 
 //					// add additional script components for trackable
 					tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
