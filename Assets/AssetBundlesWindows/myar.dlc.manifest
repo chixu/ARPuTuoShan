@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 190259128
+CRC: 3506700876
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 596c5a9921b959225e66eecfe0de3dd0
+    Hash: cbb1eb3e40c88640f7cabfd10ab8f3e6
   TypeTreeHash:
     serializedVersion: 2
-    Hash: fd5e828166d2afb60548f5e69ebbe212
+    Hash: cfc1283ac307cd08c2a60224cb201d9c
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -24,12 +24,15 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 11500000, guid: 4ca6386a2908f1a4aa6a6fe22cb9214f, type: 3}
+  Script: {fileID: 11500000, guid: e246bd21db86f8346bc66895a661fcc4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: cadfb90286c81fd42a6785e4e7cd3024, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5a917f0af64a6423093132dab321c15f, type: 3}
 - Class: 115
   Script: {instanceID: 0}
-- Class: 136
+- Class: 135
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/Capsule.prefab
-- Assets/Materials/blue.mat
+- Assets/Prefabs/Jingmai.prefab
 Dependencies: []

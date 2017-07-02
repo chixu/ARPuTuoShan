@@ -160,7 +160,7 @@ public class MainController : MonoBehaviour {
 				}
 			}
 		}
-		yield return StartGame ();
+		//yield return StartGame ();
 	}
 
 	void Log(string str){
