@@ -7,7 +7,8 @@ using System;
 using UnityEngine.Networking;
 using Vuforia;
 
-public class Main : MonoBehaviour {
+public class Main : MonoBehaviour
+{
 	public string assetBundleFolderName = "assetbundle";
 	public string remoteUrl = "";
 	public string fileName = "myassets.dlc";
@@ -20,9 +21,11 @@ public class Main : MonoBehaviour {
 	private Mappings mappings;
 	private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets = new Dictionary<string, UnityEngine.Object> ();
+	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
 
 	[System.Serializable]
-	public class Config{
+	public class Config
+	{
 		public string version = "";
 		public string[] files;
 	}
@@ -41,50 +44,35 @@ public class Main : MonoBehaviour {
 		public Mapping[] mappings;
 	}
 
-
-//	IEnumerator ReadLocal  (bool isRemote = false){
-//		Log ("loading " + GetConfigUrl (isRemote));
-//		UnityWebRequest www = UnityWebRequest.Get ((isRemote?"":"file:///")+GetConfigUrl(isRemote));
-//		Log (GetConfigUrl(isRemote));
-//		yield return www.Send ();
-//		if (www.isError) {
-//			Log (www.error);
-//			Log ("unabled to load " + GetConfigUrl (isRemote));
-//		} else {
-//			if(isRemote)
-//				remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
-//			else
-//				localConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
-//		}
-//	}
-
-	IEnumerator ReadLocalConfig(){
+	IEnumerator ReadLocalConfig ()
+	{
 		string url = GetConfigUrl ();
-		WWW www = new WWW("file:///"+GetConfigUrl(false));
-		Log ("loading " + url);
+		WWW www = new WWW ("file:///" + GetConfigUrl (false));
 		yield return www;
-		if (!String.IsNullOrEmpty(www.error)) {
-			Log (www.error);
-			Log ("unabled to load " + url);
+		if (!String.IsNullOrEmpty (www.error)) {
+			Log ("unabled to load Local Config");
 		} else {
+			Log ("Local Config Loaded");
 			localConfig = JsonUtility.FromJson<Config> (www.text);
 		}
 	}
 
-	IEnumerator ReadRemoteConfig(){
+	IEnumerator ReadRemoteConfig ()
+	{
 		string url = GetConfigUrl (true);
 		Log ("loading " + url);
 		UnityWebRequest www = UnityWebRequest.Get (url);
 		yield return www.Send ();
 		if (www.isError) {
-			Log (www.error);
-			Log ("unabled to load " + url);
+			Log ("unabled to load Remote Config");
 		} else {
+			Log ("Remote Config Loaded");
 			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
 		}
 	}
 
-	IEnumerator DownloadFile(string url, string dest){
+	IEnumerator DownloadFile (string url, string dest)
+	{
 		WWW www = new WWW (remoteUrl + "/" + url);
 		yield return www;
 		dest = Application.persistentDataPath + "/" + dest;
@@ -92,11 +80,11 @@ public class Main : MonoBehaviour {
 		Log (Path.GetDirectoryName (dest));
 		if (!Directory.Exists (Path.GetDirectoryName (dest)))
 			Directory.CreateDirectory (Path.GetDirectoryName (dest));
-		File.WriteAllBytes ( dest, www.bytes);
+		File.WriteAllBytes (dest, www.bytes);
 	}
 
 
-	public string platformName{
+	public string platformName {
 		get { 
 			if (Application.platform == RuntimePlatform.Android)
 				return "Android";
@@ -107,30 +95,22 @@ public class Main : MonoBehaviour {
 		}
 	}
 
-//	IEnumerator WriteFile(string path, byte[] data){
-//		File.WriteAllBytes(path, data);
-//	}
+	//	IEnumerator WriteFile(string path, byte[] data){
+	//		File.WriteAllBytes(path, data);
+	//	}
 
-	string GetConfigUrl(bool isRemote = false){
-		return (isRemote? remoteUrl : Application.persistentDataPath )+  "/" + configName;
+	string GetConfigUrl (bool isRemote = false)
+	{
+		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
 	}
 
-	string GetAssetBundleFolderName(bool isRemote = false){
-		string platform;
-		if (Application.platform == RuntimePlatform.Android)
-			platform = "Android";
-		else if (Application.platform == RuntimePlatform.IPhonePlayer)
-			platform = "IOS";
-		else
-			platform = "Windows";
-		return ( isRemote? remoteUrl : Application.persistentDataPath) + "/" + platform +"/" + fileName;
-	}
-
-	string GetLocalAssetName(string fileName){
+	string GetLocalAssetName (string fileName)
+	{
 		return Application.persistentDataPath + "/" + fileName;
 	}
 
-	IEnumerator StartGame(){
+	IEnumerator StartGame ()
+	{
 //		string mapPath = "file:///" + GetLocalAssetName ("mappings.json");
 //		WWW www = new WWW (mapPath);
 //		yield return www;
@@ -140,21 +120,21 @@ public class Main : MonoBehaviour {
 //			mappings = JsonUtility.FromJson<Mappings> (www.text);
 //		}
 
-		WWW www = new WWW ("file:///" + GetAssetBundleFolderName ());
+		WWW www = new WWW ("file:///" + Application.persistentDataPath + "/" + fileName);
 		yield return www;
 		if (www.error != null) {
-			Log ("Network error");
+			Log ("Unable to load prefabs");
 			yield break;
 		} else {
 			AssetBundle bundle = www.assetBundle;
 			string[] assetNames;
-			try{
-				assetNames = bundle.GetAllAssetNames();
+			try {
+				assetNames = bundle.GetAllAssetNames ();
 				foreach (string name in assetNames) {
-					string simpleName = Path.GetFileNameWithoutExtension(name);
+					string simpleName = Path.GetFileNameWithoutExtension (name);
 					Log (simpleName);
 					//Instantiate(bundle.LoadAsset());
-					loadedAssets.Add(simpleName, bundle.LoadAsset(simpleName));
+					loadedAssets.Add (simpleName, bundle.LoadAsset (simpleName));
 				}
 //				Log ("===================scenePath==============");
 //				string[] scenePath = bundle.GetAllScenePaths();
@@ -162,7 +142,7 @@ public class Main : MonoBehaviour {
 //					Log (path);
 //				}
 
-			}catch(Exception e){
+			} catch (Exception e) {
 				Log (e.StackTrace);
 			}
 
@@ -170,10 +150,12 @@ public class Main : MonoBehaviour {
 		LoadDataSet ();
 	}
 
-	IEnumerator Start(){
+	IEnumerator Start ()
+	{
 		Log (Application.persistentDataPath);
-		yield return StartCoroutine (ReadRemoteConfig());
-		yield return StartCoroutine (ReadLocalConfig());
+		ConfigDict.Add ("platform", platformName);
+		yield return StartCoroutine (ReadRemoteConfig ());
+		yield return StartCoroutine (ReadLocalConfig ());
 		if (remoteConfig == null) {
 			if (localConfig == null) {
 
@@ -181,14 +163,15 @@ public class Main : MonoBehaviour {
 
 			}
 			//yield break;
-		} else if(localConfig == null || localConfig.version != remoteConfig.version){
+		} else if (localConfig == null || localConfig.version != remoteConfig.version) {
 			Log ("Overwrite localConfig");
 			File.WriteAllText (GetConfigUrl (), JsonUtility.ToJson (remoteConfig));
 			if (remoteConfig.files != null) {
-				for(int i=0; i<remoteConfig.files.Length; i++){
-					string fileName =  platformName + "/" + remoteConfig.files [i];
-					Log ("Downloading ..." + fileName);
-					yield return DownloadFile (fileName, fileName);
+				for (int i = 0; i < remoteConfig.files.Length; i++) {
+					string source = remoteConfig.files [i].Replace ("{%platform%}", platformName);
+					string dest = remoteConfig.files [i].Replace ("{%platform%}/", "");
+					Log ("Downloading ..." + source + " to " + dest);
+					yield return DownloadFile (source, dest);
 				}
 			}
 		}
@@ -223,7 +206,7 @@ public class Main : MonoBehaviour {
 
 
 
-				if (loadedAssets.ContainsKey(tb.TrackableName)) {
+				if (loadedAssets.ContainsKey (tb.TrackableName)) {
 					Log ("DynamicImageTarget-" + tb.TrackableName);
 					//				if (tb.name == "New Game Object") {
 					//				 
@@ -244,8 +227,9 @@ public class Main : MonoBehaviour {
 		}
 	}
 
-	void Log(string str){
-		if(!String.IsNullOrEmpty(str))
+	void Log (string str)
+	{
+		if (!String.IsNullOrEmpty (str))
 			text.text += "\n" + str;
 	}
 }
