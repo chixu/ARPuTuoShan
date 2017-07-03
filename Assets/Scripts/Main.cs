@@ -53,6 +53,7 @@ public class Main : MonoBehaviour
 			Log ("unabled to load Local Config");
 		} else {
 			Log ("Local Config Loaded");
+			Log (www.text);
 			localConfig = JsonUtility.FromJson<Config> (www.text);
 		}
 	}
@@ -61,19 +62,20 @@ public class Main : MonoBehaviour
 	{
 		string url = GetConfigUrl (true);
 		Log ("loading " + url);
-		UnityWebRequest www = UnityWebRequest.Get (url);
+		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
 		yield return www.Send ();
 		if (www.isError) {
 			Log ("unabled to load Remote Config");
 		} else {
 			Log ("Remote Config Loaded");
+			Log (www.downloadHandler.text);
 			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
 		}
 	}
 
 	IEnumerator DownloadFile (string url, string dest)
 	{
-		WWW www = new WWW (remoteUrl + "/" + url);
+		WWW www = new WWW (Utils.ApplyRandomVersion (remoteUrl + "/" + url));
 		yield return www;
 		dest = Application.persistentDataPath + "/" + dest;
 		Log (dest);
@@ -165,7 +167,6 @@ public class Main : MonoBehaviour
 			//yield break;
 		} else if (localConfig == null || localConfig.version != remoteConfig.version) {
 			Log ("Overwrite localConfig");
-			File.WriteAllText (GetConfigUrl (), JsonUtility.ToJson (remoteConfig));
 			if (remoteConfig.files != null) {
 				for (int i = 0; i < remoteConfig.files.Length; i++) {
 					string source = remoteConfig.files [i].Replace ("{%platform%}", platformName);
@@ -174,6 +175,7 @@ public class Main : MonoBehaviour
 					yield return DownloadFile (source, dest);
 				}
 			}
+			File.WriteAllText (GetConfigUrl (), JsonUtility.ToJson (remoteConfig));
 		}
 		yield return StartGame ();
 	}

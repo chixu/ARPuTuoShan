@@ -12,4 +12,8 @@ public class Utils
 		}
 		return str;
 	}
+
+	public static string ApplyRandomVersion (string str){
+		return str + "?v=" + UnityEngine.Random.Range(100000,999999).ToString ();
+	}
 }
