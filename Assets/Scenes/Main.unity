@@ -739,7 +739,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1688310950}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9320484
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -957,7 +957,7 @@ MonoBehaviour:
   m_VideoPath: 
   m_AutoOpen: 0
   m_AutoStart: 0
-  m_Loop: 0
+  m_Loop: 1
   m_Volume: 1
   m_Muted: 0
   m_PlaybackRate: 1
@@ -1051,6 +1051,7 @@ MonoBehaviour:
   configName: config.json
   text: {fileID: 424449036}
   mediaPlayer: {fileID: 1485654716}
+  videoMaterial: {fileID: 2100000, guid: 651a9a170ec8a7e40b2eb4cd24864619, type: 2}
 --- !u!4 &1513859969
 Transform:
   m_ObjectHideFlags: 0
@@ -1255,7 +1256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00000058859587}
+  m_AnchoredPosition: {x: 0, y: 5.9104314}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1688310949
