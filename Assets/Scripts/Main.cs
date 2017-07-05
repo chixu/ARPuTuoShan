@@ -217,6 +217,7 @@ public class Main : MonoBehaviour
 					//				 
 					//					// add additional script components for trackable
 					tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
+					tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
 					tb.gameObject.AddComponent<TurnOffBehaviour> ();
 					UnityEngine.Object asset = loadedAssets [tb.TrackableName];
 					GameObject obj = (GameObject)GameObject.Instantiate (asset);
