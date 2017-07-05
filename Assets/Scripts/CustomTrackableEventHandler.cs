@@ -16,13 +16,15 @@ namespace Vuforia
 	public class CustomTrackableEventHandler : MonoBehaviour,
 	ITrackableEventHandler
 	{
+
+		public string videoName;
 		#region PRIVATE_MEMBER_VARIABLES
 
 		private TrackableBehaviour mTrackableBehaviour;
 		//private bool isForcedTrackingLost = false;
 		//private ImageTargetBehaviour ITB;
 		private TouchRotate touchRotate;
-		private MediaPlayer mediaPlayer;
+		public MediaPlayer mediaPlayer;
 
 		#endregion // PRIVATE_MEMBER_VARIABLES
 
@@ -47,12 +49,12 @@ namespace Vuforia
 //			}
 
 			touchRotate = this.GetComponentInChildren<TouchRotate> ();
-			mediaPlayer = this.GetComponentInChildren<MediaPlayer> ();
-			if (mediaPlayer) {
-				mediaPlayer.m_VideoPath = mediaPlayer.m_VideoPath.Replace ("{%persistentPath%}", Application.persistentDataPath);
-				Debug.Log (mediaPlayer.m_VideoPath);
-				mediaPlayer.PostStart ();
-			}
+//			mediaPlayer = this.GetComponentInChildren<MediaPlayer> ();
+//			if (mediaPlayer) {
+//				mediaPlayer.m_VideoPath = mediaPlayer.m_VideoPath.Replace ("{%persistentPath%}", Application.persistentDataPath);
+//				Debug.Log (mediaPlayer.m_VideoPath);
+//				mediaPlayer.PostStart ();
+//			}
 		}
 
 		#endregion // UNTIY_MONOBEHAVIOUR_METHODS
@@ -104,9 +106,9 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = true;
 //			}
-			if (mediaPlayer) {
-				mediaPlayer.Control.Rewind ();
-				mediaPlayer.Control.Play ();
+			if(!string.IsNullOrEmpty(videoName) && mediaPlayer) {
+				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, Application.persistentDataPath + "/" + videoName, true);
+				mediaPlayer.Play ();
 			}
 		}
 
@@ -116,7 +118,7 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = false;
 //			}
-			if(mediaPlayer)
+			if(!string.IsNullOrEmpty(videoName) && mediaPlayer)
 				mediaPlayer.Control.Stop();
 		}
 

@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 23232342448165422}
   - component: {fileID: 114382803825848026}
   m_Layer: 0
-  m_Name: jingmai_quanshen
+  m_Name: jingmai
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

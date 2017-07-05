@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
 using Vuforia;
+using RenderHeads.Media.AVProVideo;
 
 public class Main : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class Main : MonoBehaviour
 	public string fileName = "myassets.dlc";
 	public string configName = "config.json";
 	public Text text;
-
+	public MediaPlayer mediaPlayer;
+	public Material videoMaterial;
 
 	private Config localConfig;
 	private Config remoteConfig;
@@ -208,22 +210,32 @@ public class Main : MonoBehaviour
 
 
 
-				if (loadedAssets.ContainsKey (tb.TrackableName)) {
-					Log ("DynamicImageTarget-" + tb.TrackableName);
-					//				if (tb.name == "New Game Object") {
-					//				 
-					//					// change generic name to include trackable name
-					tb.gameObject.name = "DynamicImageTarget-" + tb.TrackableName;
-					//				 
-					//					// add additional script components for trackable
-					tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
-					tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
-					tb.gameObject.AddComponent<TurnOffBehaviour> ();
-					UnityEngine.Object asset = loadedAssets [tb.TrackableName];
-					GameObject obj = (GameObject)GameObject.Instantiate (asset);
-					obj.transform.parent = tb.gameObject.transform;
-					obj.gameObject.SetActive (true);
+				//if (loadedAssets.ContainsKey (tb.TrackableName)) {
+				Log ("DynamicImageTarget-" + tb.TrackableName);
+				//				if (tb.name == "New Game Object") {
+				//				 
+				//					// change generic name to include trackable name
+				tb.gameObject.name = "AR-" + tb.TrackableName;
+				//				 
+				//					// add additional script components for trackable
+				tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
+				tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
+				tb.gameObject.AddComponent<TurnOffBehaviour> ();
+				UnityEngine.Object asset;
+				if(loadedAssets.ContainsKey (tb.TrackableName)){
+					asset =  loadedAssets [tb.TrackableName];
+				}else{
+					asset =  loadedAssets["plane"];
+					Renderer render = ((GameObject)loadedAssets ["plane"]).GetComponent<Renderer> ();
+					render.material = videoMaterial;
+					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+					cte.videoName = tb.TrackableName + ".mp4";
+					cte.mediaPlayer = mediaPlayer;
 				}
+				GameObject obj = (GameObject)GameObject.Instantiate (asset);
+				obj.transform.parent = tb.gameObject.transform;
+				obj.gameObject.SetActive (true);
+				//}
 			}
 		} else {
 			Debug.LogError ("<color=yellow>Failed to load dataset: '" + dataSetName + "'</color>");
