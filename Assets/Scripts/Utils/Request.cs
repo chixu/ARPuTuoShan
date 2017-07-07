@@ -1,0 +1,77 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System;
+using UnityEngine;
+using UnityEngine.Networking;
+using System.IO;
+
+public class Request
+{
+	public static string RemoteUrl = "http://192.168.0.105:8080/web";
+
+//	public static IEnumerator ReadRemote (string str, Action<string> handler)
+//	{
+//		string url = RemoteUrl+"/" +str;
+//		Logger.Log ("loading " + url);
+//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
+//		yield return www.Send ();
+//		if (www.isError) {
+//			Logger.Log ("unabled to load " + url);
+//		} else {
+//			Logger.Log ("Loaded successfully");
+//			handler.Invoke (www.downloadHandler.text);
+//		}
+//	}
+
+
+	public static IEnumerator ReadRemote (string str, Action<string> handler)
+	{
+		string url = RemoteUrl+"/" +str;
+		Logger.Log ("loading " + url);
+		WWW www = new WWW (Utils.ApplyRandomVersion (url));
+		yield return www;
+		if (!String.IsNullOrEmpty(www.error)) {
+			Logger.Log ("unabled to load " + url);
+		} else {
+			Logger.Log ("Loaded successfully");
+			handler.Invoke (www.text);
+		}
+	}
+
+
+	public static IEnumerator ReadStreaming (string str, Action<string> handler)
+	{
+		yield return Read ("file:///" + Application.streamingAssetsPath + "/" + str, handler);
+	}
+
+	public static IEnumerator ReadPersistent (string str, Action<string> handler)
+	{
+		yield return Read ("file:///" + Application.persistentDataPath + "/" + str, handler);
+	}
+
+	public static IEnumerator Read (string str, Action<string> handler)
+	{
+		Logger.Log ("loading " + str);
+		WWW www = new WWW (str);
+		yield return www;
+		if (!String.IsNullOrEmpty(www.error)) {
+			Logger.Log ("unabled to load " + str);
+		} else {
+			Logger.Log ("Loaded successfully");
+			handler.Invoke (www.text);
+		}
+	}
+
+	public static IEnumerator DownloadFile (string src, string dest)
+	{
+		Debug.Log ("Downloading " + src + " to " +  dest);
+		string url = RemoteUrl+"/" +src;
+		WWW www = new WWW (Utils.ApplyRandomVersion (url));
+		yield return www;
+		dest = Path.Combine(Application.persistentDataPath , dest);
+		if (!Directory.Exists (Path.GetDirectoryName (dest)))
+			Directory.CreateDirectory (Path.GetDirectoryName (dest));
+		File.WriteAllBytes (dest, www.bytes);
+		Debug.Log ("Downloaded " + src + " to " +  dest);
+	}
+}

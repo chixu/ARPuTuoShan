@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 using Vuforia;
 using RenderHeads.Media.AVProVideo;
 
-public class Main : MonoBehaviour
+public class ScanSceneContoller : MonoBehaviour
 {
 	public string assetBundleFolderName = "assetbundle";
 	public string remoteUrl = "";
@@ -18,8 +18,8 @@ public class Main : MonoBehaviour
 	public MediaPlayer mediaPlayer;
 	public Material videoMaterial;
 
-	private Config localConfig;
-	private Config remoteConfig;
+//	private Config localConfig;
+//	private Config remoteConfig;
 	private Mappings mappings;
 	private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets = new Dictionary<string, UnityEngine.Object> ();
@@ -46,58 +46,58 @@ public class Main : MonoBehaviour
 		public Mapping[] mappings;
 	}
 
-	IEnumerator ReadLocalConfig ()
-	{
-		string url = GetConfigUrl ();
-		WWW www = new WWW ("file:///" + GetConfigUrl (false));
-		yield return www;
-		if (!String.IsNullOrEmpty (www.error)) {
-			Log ("unabled to load Local Config");
-		} else {
-			Log ("Local Config Loaded");
-			Log (www.text);
-			localConfig = JsonUtility.FromJson<Config> (www.text);
-		}
-	}
+//	IEnumerator ReadLocalConfig ()
+//	{
+//		string url = GetConfigUrl ();
+//		WWW www = new WWW ("file:///" + GetConfigUrl (false));
+//		yield return www;
+//		if (!String.IsNullOrEmpty (www.error)) {
+//			Log ("unabled to load Local Config");
+//		} else {
+//			Log ("Local Config Loaded");
+//			Log (www.text);
+//			localConfig = JsonUtility.FromJson<Config> (www.text);
+//		}
+//	}
+//
+//	IEnumerator ReadRemoteConfig ()
+//	{
+//		string url = GetConfigUrl (true);
+//		Log ("loading " + url);
+//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
+//		yield return www.Send ();
+//		if (www.isError) {
+//			Log ("unabled to load Remote Config");
+//		} else {
+//			Log ("Remote Config Loaded");
+//			Log (www.downloadHandler.text);
+//			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
+//		}
+//	}
 
-	IEnumerator ReadRemoteConfig ()
-	{
-		string url = GetConfigUrl (true);
-		Log ("loading " + url);
-		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
-		yield return www.Send ();
-		if (www.isError) {
-			Log ("unabled to load Remote Config");
-		} else {
-			Log ("Remote Config Loaded");
-			Log (www.downloadHandler.text);
-			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
-		}
-	}
-
-	IEnumerator DownloadFile (string url, string dest)
-	{
-		WWW www = new WWW (Utils.ApplyRandomVersion (remoteUrl + "/" + url));
-		yield return www;
-		dest = Application.persistentDataPath + "/" + dest;
-		Log (dest);
-		Log (Path.GetDirectoryName (dest));
-		if (!Directory.Exists (Path.GetDirectoryName (dest)))
-			Directory.CreateDirectory (Path.GetDirectoryName (dest));
-		File.WriteAllBytes (dest, www.bytes);
-	}
-
-
-	public string platformName {
-		get { 
-			if (Application.platform == RuntimePlatform.Android)
-				return "Android";
-			else if (Application.platform == RuntimePlatform.IPhonePlayer)
-				return "IOS";
-			else
-				return "Windows";
-		}
-	}
+//	IEnumerator DownloadFile (string url, string dest)
+//	{
+//		WWW www = new WWW (Utils.ApplyRandomVersion (remoteUrl + "/" + url));
+//		yield return www;
+//		dest = Application.persistentDataPath + "/" + dest;
+//		Log (dest);
+//		Log (Path.GetDirectoryName (dest));
+//		if (!Directory.Exists (Path.GetDirectoryName (dest)))
+//			Directory.CreateDirectory (Path.GetDirectoryName (dest));
+//		File.WriteAllBytes (dest, www.bytes);
+//	}
+//
+//
+//	public string platformName {
+//		get { 
+//			if (Application.platform == RuntimePlatform.Android)
+//				return "Android";
+//			else if (Application.platform == RuntimePlatform.IPhonePlayer)
+//				return "IOS";
+//			else
+//				return "Windows";
+//		}
+//	}
 
 	//	IEnumerator WriteFile(string path, byte[] data){
 	//		File.WriteAllBytes(path, data);
@@ -108,10 +108,10 @@ public class Main : MonoBehaviour
 		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
 	}
 
-	string GetLocalAssetName (string fileName)
-	{
-		return Application.persistentDataPath + "/" + fileName;
-	}
+//	string GetLocalAssetName (string fileName)
+//	{
+//		return Application.persistentDataPath + "/" + fileName;
+//	}
 
 	IEnumerator StartGame ()
 	{
@@ -154,32 +154,39 @@ public class Main : MonoBehaviour
 		LoadDataSet ();
 	}
 
-	IEnumerator Start ()
+	void Start ()
 	{
-		Log (Application.persistentDataPath);
-		ConfigDict.Add ("platform", platformName);
-		yield return StartCoroutine (ReadRemoteConfig ());
-		yield return StartCoroutine (ReadLocalConfig ());
-		if (remoteConfig == null) {
-			if (localConfig == null) {
+//		Log (Application.persistentDataPath);
+//		ConfigDict.Add ("platform", platformName);
+//		yield return StartCoroutine (ReadRemoteConfig ());
+//		yield return StartCoroutine (ReadLocalConfig ());
+//		if (remoteConfig == null) {
+//			if (localConfig == null) {
+//
+//			} else {
+//
+//			}
+//			//yield break;
+//		} else if (localConfig == null || localConfig.version != remoteConfig.version) {
+//			Log ("Overwrite localConfig");
+//			if (remoteConfig.files != null) {
+//				for (int i = 0; i < remoteConfig.files.Length; i++) {
+//					string source = remoteConfig.files [i].Replace ("{%platform%}", platformName);
+//					string dest = remoteConfig.files [i].Replace ("{%platform%}/", "");
+//					Log ("Downloading ..." + source + " to " + dest);
+//					yield return DownloadFile (source, dest);
+//				}
+//			}
+//			File.WriteAllText (GetConfigUrl (), JsonUtility.ToJson (remoteConfig));
+//		}
+		//Vuforia.VuforiaRuntime.Instance.InitPlatform();
+		//Vuforia.VuforiaRuntime.Instance.InitVuforia();
+		StartCoroutine(StartGame ());
+	}
 
-			} else {
-
-			}
-			//yield break;
-		} else if (localConfig == null || localConfig.version != remoteConfig.version) {
-			Log ("Overwrite localConfig");
-			if (remoteConfig.files != null) {
-				for (int i = 0; i < remoteConfig.files.Length; i++) {
-					string source = remoteConfig.files [i].Replace ("{%platform%}", platformName);
-					string dest = remoteConfig.files [i].Replace ("{%platform%}/", "");
-					Log ("Downloading ..." + source + " to " + dest);
-					yield return DownloadFile (source, dest);
-				}
-			}
-			File.WriteAllText (GetConfigUrl (), JsonUtility.ToJson (remoteConfig));
-		}
-		yield return StartGame ();
+	void Awake(){
+		string a = "1";
+		Vuforia.VuforiaRuntime.Instance.InitVuforia ();
 	}
 
 
