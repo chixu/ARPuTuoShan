@@ -5,22 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class StartSceneController : MonoBehaviour {
 
+	public bool loaded = false;
 	// Use this for initialization
 	void Start () {
-		//StartCoroutine (NextScene ());
-	}
-	
-	IEnumerator NextScene(){
-		yield return new WaitForSeconds (1);
-		SceneManager.LoadScene ("Selection");
+		StartCoroutine (NextSceneAfterSeconds (5));
 	}
 
-	public string RemoteUrl{
-		set{
-			Request.RemoteUrl = value;
-		}
-		get{
-			return Request.RemoteUrl;
-		}
+	public void NextScene(){
+		if (loaded)
+			SceneManager.LoadScene ("Selection");
+	}
+	
+	IEnumerator NextSceneAfterSeconds(int second){
+		yield return new WaitForSeconds (second);
+		NextScene ();
 	}
 }

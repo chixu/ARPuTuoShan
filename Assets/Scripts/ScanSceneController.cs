@@ -7,16 +7,18 @@ using System;
 using UnityEngine.Networking;
 using Vuforia;
 using RenderHeads.Media.AVProVideo;
+using UnityEngine.SceneManagement;
 
-public class ScanSceneContoller : MonoBehaviour
+public class ScanSceneController : MonoBehaviour
 {
-	public string assetBundleFolderName = "assetbundle";
-	public string remoteUrl = "";
+	//public string remoteUrl = "";
 	public string fileName = "myassets.dlc";
-	public string configName = "config.json";
-	public Text text;
+	//public string configName = "config.json";
+	//public Text text;
 	public MediaPlayer mediaPlayer;
 	public Material videoMaterial;
+	public Text title;
+	public Text description;
 
 //	private Config localConfig;
 //	private Config remoteConfig;
@@ -103,10 +105,10 @@ public class ScanSceneContoller : MonoBehaviour
 	//		File.WriteAllBytes(path, data);
 	//	}
 
-	string GetConfigUrl (bool isRemote = false)
-	{
-		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
-	}
+//	string GetConfigUrl (bool isRemote = false)
+//	{
+//		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
+//	}
 
 //	string GetLocalAssetName (string fileName)
 //	{
@@ -123,11 +125,12 @@ public class ScanSceneContoller : MonoBehaviour
 //		} else {
 //			mappings = JsonUtility.FromJson<Mappings> (www.text);
 //		}
-
+		title.text = I18n.Translate("scan_title");
+		description.text = I18n.Translate("scan_desc");
 		WWW www = new WWW ("file:///" + Application.persistentDataPath + "/" + fileName);
 		yield return www;
 		if (www.error != null) {
-			Log ("Unable to load prefabs");
+			//Log ("Unable to load prefabs");
 			yield break;
 		} else {
 			AssetBundle bundle = www.assetBundle;
@@ -136,7 +139,7 @@ public class ScanSceneContoller : MonoBehaviour
 				assetNames = bundle.GetAllAssetNames ();
 				foreach (string name in assetNames) {
 					string simpleName = Path.GetFileNameWithoutExtension (name);
-					Log (simpleName);
+					//Log (simpleName);
 					//Instantiate(bundle.LoadAsset());
 					loadedAssets.Add (simpleName, bundle.LoadAsset (simpleName));
 				}
@@ -147,7 +150,7 @@ public class ScanSceneContoller : MonoBehaviour
 //				}
 
 			} catch (Exception e) {
-				Log (e.StackTrace);
+				//Log (e.StackTrace);
 			}
 
 		}
@@ -184,12 +187,6 @@ public class ScanSceneContoller : MonoBehaviour
 		StartCoroutine(StartGame ());
 	}
 
-	void Awake(){
-		string a = "1";
-		Vuforia.VuforiaRuntime.Instance.InitVuforia ();
-	}
-
-
 	void LoadDataSet ()
 	{
 
@@ -218,7 +215,7 @@ public class ScanSceneContoller : MonoBehaviour
 
 
 				//if (loadedAssets.ContainsKey (tb.TrackableName)) {
-				Log ("DynamicImageTarget-" + tb.TrackableName);
+				//Log ("DynamicImageTarget-" + tb.TrackableName);
 				//				if (tb.name == "New Game Object") {
 				//				 
 				//					// change generic name to include trackable name
@@ -249,9 +246,13 @@ public class ScanSceneContoller : MonoBehaviour
 		}
 	}
 
-	void Log (string str)
-	{
-		if (!String.IsNullOrEmpty (str))
-			text.text += "\n" + str;
+	public void OnBackClick(){
+		Debug.Log ("back Clicked");
+		SceneManager.LoadScene ("Selection");
 	}
+//	void Log (string str)
+//	{
+//		if (!String.IsNullOrEmpty (str))
+//			text.text += "\n" + str;
+//	}
 }

@@ -6,9 +6,10 @@ using System.IO;
 
 public class Configuration : MonoBehaviour {
 	public string remoteUrl;
+	public string language = Language.Chinese;
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 		Request.RemoteUrl = remoteUrl;
 		if (!Directory.Exists (Path.Combine (Application.persistentDataPath, "ui"))) {
 			string[] ignores = new string[1];
@@ -21,8 +22,7 @@ public class Configuration : MonoBehaviour {
 	IEnumerator readConfig ()
 	{
 		yield return Config.LoadConfig ("ui/config.xml");
-		yield return I18n.Initialise ();
-		Debug.Log ("done");
-		SceneManager.LoadScene ("Selection");
+		yield return I18n.Initialise (language);
+		GetComponent<StartSceneController> ().loaded = true;
 	}
 }
