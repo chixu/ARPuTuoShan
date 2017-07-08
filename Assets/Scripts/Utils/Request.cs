@@ -9,28 +9,28 @@ public class Request
 {
 	public static string RemoteUrl = "http://192.168.0.105:8080/web";
 
-//	public static IEnumerator ReadRemote (string str, Action<string> handler)
-//	{
-//		string url = RemoteUrl+"/" +str;
-//		Logger.Log ("loading " + url);
-//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
-//		yield return www.Send ();
-//		if (www.isError) {
-//			Logger.Log ("unabled to load " + url);
-//		} else {
-//			Logger.Log ("Loaded successfully");
-//			handler.Invoke (www.downloadHandler.text);
-//		}
-//	}
+	//	public static IEnumerator ReadRemote (string str, Action<string> handler)
+	//	{
+	//		string url = RemoteUrl+"/" +str;
+	//		Logger.Log ("loading " + url);
+	//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
+	//		yield return www.Send ();
+	//		if (www.isError) {
+	//			Logger.Log ("unabled to load " + url);
+	//		} else {
+	//			Logger.Log ("Loaded successfully");
+	//			handler.Invoke (www.downloadHandler.text);
+	//		}
+	//	}
 
 
 	public static IEnumerator ReadRemote (string str, Action<string> handler)
 	{
-		string url = RemoteUrl+"/" +str;
+		string url = RemoteUrl + "/" + str;
 		Logger.Log ("loading " + url);
 		WWW www = new WWW (Utils.ApplyRandomVersion (url));
 		yield return www;
-		if (!String.IsNullOrEmpty(www.error)) {
+		if (!String.IsNullOrEmpty (www.error)) {
 			Logger.Log ("unabled to load " + url);
 		} else {
 			Logger.Log ("Loaded successfully");
@@ -54,7 +54,7 @@ public class Request
 		Logger.Log ("loading " + str);
 		WWW www = new WWW (str);
 		yield return www;
-		if (!String.IsNullOrEmpty(www.error)) {
+		if (!String.IsNullOrEmpty (www.error)) {
 			Logger.Log ("unabled to load " + str);
 		} else {
 			Logger.Log ("Loaded successfully");
@@ -62,16 +62,17 @@ public class Request
 		}
 	}
 
-	public static IEnumerator DownloadFile (string src, string dest)
+	public static IEnumerator DownloadFile (string src, string dest, bool absolute = false)
 	{
-		Debug.Log ("Downloading " + src + " to " +  dest);
-		string url = RemoteUrl+"/" +src;
-		WWW www = new WWW (Utils.ApplyRandomVersion (url));
+		//
+		src = absolute ? src : Utils.ApplyRandomVersion (RemoteUrl + "/" + src);
+		Logger.Log ("Downloading " + src + " to " + dest);
+		WWW www = new WWW (src);
 		yield return www;
-		dest = Path.Combine(Application.persistentDataPath , dest);
+		dest = absolute ? dest : Path.Combine (Application.persistentDataPath, dest);
 		if (!Directory.Exists (Path.GetDirectoryName (dest)))
 			Directory.CreateDirectory (Path.GetDirectoryName (dest));
 		File.WriteAllBytes (dest, www.bytes);
-		Debug.Log ("Downloaded " + src + " to " +  dest);
+		Logger.Log ("Downloaded " + src + " to " + dest);
 	}
 }

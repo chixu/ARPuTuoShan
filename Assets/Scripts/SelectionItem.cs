@@ -9,7 +9,7 @@ public class SelectionItem : MonoBehaviour {
 
 	public Text text;
 	public Image image;
-	//private Action<string> onClickHandler;
+	private Action<SelectionItem> onClickHandler;
 	// Use this for initialization
 	void Start () {
 		
@@ -20,23 +20,17 @@ public class SelectionItem : MonoBehaviour {
 		
 	}
 
-//	public void SetOnClick(Action<string> handler){
-//		onClickHandler = handler;
-//	}
-	public void OnClick(){
-		StartCoroutine (OnClickHandler ());
+	public void SetOnClick(Action<SelectionItem> handler){
+		onClickHandler = handler;
 	}
+		
+//	public void OnClick(){
+//		StartCoroutine (OnClickHandler ());
+//	}
 
-	private IEnumerator OnClickHandler(){
-
-
-		Debug.Log (this.name + " clicked");
-		yield return Config.LoadConfig (this.name + "/config.xml");
-		Hashtable arg = new Hashtable ();
-		arg.Add ("name", this.name);
-		SceneManagerExtension.LoadScene ("Scan", arg);
-//		if (onClickHandler != null)
-//			onClickHandler.Invoke (this.name);
+	public void OnClick(){
+		if (onClickHandler != null)
+			onClickHandler.Invoke (this);
 	}
 
 	//public void Init

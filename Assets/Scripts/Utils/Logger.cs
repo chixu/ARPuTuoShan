@@ -10,8 +10,9 @@ public class Logger
 
 	public static void Log (string str){
 		if (text) {
-			text.text += str+"/n";
+			text.text += str+"\n";
 		} else
-			Debug.Log ("<color=yellow>" + str + "</color>");
+			//Debug.Log ("<color=yellow>" + str + "</color>");
+			Debug.LogError ("***<color=yellow>" + str + "</color>");
 	}
 }

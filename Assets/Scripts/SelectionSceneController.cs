@@ -10,14 +10,21 @@ public class SelectionSceneController : MonoBehaviour
 {
 	public GameObject selectionItem;
 	public GameObject itemsPanel;
-
+	public ProgressPanel progressPanel;
 	private XElement layout;
 	private List<GameObject> selectionItems;
 	// Use this for initialization
+	private bool enabled = true;
+
 	void Start ()
 	{
 //		Debug.Log ("Start");
 		selectionItems = new List<GameObject> ();
+		progressPanel.onCancelHandler = () => {
+			Debug.LogError("dddfsdfdfsdfss");
+			Config.forceBreak = true;
+			progressPanel.Hide();
+		};
 		StartCoroutine (initScene ());
 	}
 
@@ -44,7 +51,7 @@ public class SelectionSceneController : MonoBehaviour
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
 				itemComp.name = "item" + (index + 1).ToString ();
 				itemComp.text.text = I18n.Translate (desc);
-				//itemComp.SetOnClick (OnItemClick);
+				itemComp.SetOnClick (OnItemClick);
 //				WWW www = new WWW(Path.Combine(Application.persistentDataPath, "ui/"+icon));
 //				itemComp.image.sprite = Sprite.Create(www.texture, new Rect(0,0,www.texture.width, www.texture.height), new Vector2(0,0));
 				StartCoroutine(LoadIcon ("ui/"+icon, itemComp.image));
@@ -53,12 +60,45 @@ public class SelectionSceneController : MonoBehaviour
 		}
 	}
 
-//	void OnItemClick(string str){
-//		Debug.Log (str + " clicked");
-//
-//		SceneManager.LoadScene ("Scan");
-//	}
+	bool Enabled{
+		get{
+			return enabled;
+		}
+		set{
+			enabled = value;
+			for (int i = 0; i < selectionItems.Count; i++) {
+				Button btn = selectionItems [0].GetComponent<Button> ();
+				btn.interactable = enabled;
+			}
+		}
+	}
 
+	void OnItemClick(SelectionItem item){
+		StartCoroutine (OnItemClickHandler (item.name));
+	}
+
+	IEnumerator OnItemClickHandler(string name){
+		Logger.Log (name + " clicked");
+		Enabled = false;
+		yield return Config.LoadConfig (name + "/config.xml", FileLoaded);
+		Enabled = true;
+		if (!Config.forceBreak) {
+			Hashtable arg = new Hashtable ();
+			arg.Add ("name", name);
+			SceneManagerExtension.LoadScene ("Scan", arg);
+		}
+	}
+
+	void FileLoaded(int idx, int total){
+		if (idx == 0) {
+			progressPanel.Show (total);
+			return;
+		}
+		progressPanel.Load (idx);
+		if (idx == total) {
+			progressPanel.Hide ();
+		}
+	}
 
 	IEnumerator LoadIcon(string url, Image image){
 		//Debug.Log (Path.Combine ("file:////"+ Application.persistentDataPath, url));
