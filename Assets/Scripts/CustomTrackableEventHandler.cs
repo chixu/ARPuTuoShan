@@ -17,7 +17,7 @@ namespace Vuforia
 	ITrackableEventHandler
 	{
 
-		public string videoName;
+		public string videoPath;
 		#region PRIVATE_MEMBER_VARIABLES
 
 		private TrackableBehaviour mTrackableBehaviour;
@@ -106,8 +106,8 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = true;
 //			}
-			if(!string.IsNullOrEmpty(videoName) && mediaPlayer) {
-				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, Application.persistentDataPath + "/" + videoName, true);
+			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer) {
+				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, videoPath, true);
 				mediaPlayer.Play ();
 			}
 		}
@@ -118,7 +118,7 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = false;
 //			}
-			if(!string.IsNullOrEmpty(videoName) && mediaPlayer)
+			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer)
 				mediaPlayer.Control.Stop();
 		}
 

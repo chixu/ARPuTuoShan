@@ -26,6 +26,7 @@ public class ScanSceneController : MonoBehaviour
 	private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets = new Dictionary<string, UnityEngine.Object> ();
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
+	private string prevSceneName;
 
 	[System.Serializable]
 	public class Config
@@ -114,6 +115,9 @@ public class ScanSceneController : MonoBehaviour
 //	{
 //		return Application.persistentDataPath + "/" + fileName;
 //	}
+	string GetAssetsPath(string str, bool isFile = false){
+		return (isFile ? "file:///" : "") + Application.persistentDataPath + "/" + prevSceneName + "/" + str;
+	}
 
 	IEnumerator StartGame ()
 	{
@@ -127,7 +131,9 @@ public class ScanSceneController : MonoBehaviour
 //		}
 		title.text = I18n.Translate("scan_title");
 		description.text = I18n.Translate("scan_desc");
-		WWW www = new WWW ("file:///" + Application.persistentDataPath + "/" + fileName);
+		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+		Debug.Log (prevSceneName);
+		WWW www = new WWW (GetAssetsPath(fileName, true));
 		yield return www;
 		if (www.error != null) {
 			//Log ("Unable to load prefabs");
@@ -193,8 +199,8 @@ public class ScanSceneController : MonoBehaviour
 		ObjectTracker objectTracker = TrackerManager.Instance.GetTracker<ObjectTracker> ();
 
 		DataSet dataSet = objectTracker.CreateDataSet ();
-		Debug.Log (Application.persistentDataPath + "/" + dataSetName);
-		if (dataSet.Load (Application.persistentDataPath + "/" + dataSetName, VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
+		//Debug.Log (Application.persistentDataPath + "/" + dataSetName);
+		if (dataSet.Load (GetAssetsPath(dataSetName), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
 			//if (dataSet.Load (dataSetName)) {             
 			objectTracker.Stop ();  // stop tracker so that we can add new dataset
 
@@ -233,11 +239,12 @@ public class ScanSceneController : MonoBehaviour
 					Renderer render = ((GameObject)loadedAssets ["plane"]).GetComponent<Renderer> ();
 					render.material = videoMaterial;
 					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
-					cte.videoName = tb.TrackableName + ".mp4";
+					cte.videoPath = GetAssetsPath(tb.TrackableName + ".mp4");
 					cte.mediaPlayer = mediaPlayer;
 				}
 				GameObject obj = (GameObject)GameObject.Instantiate (asset);
-				obj.transform.parent = tb.gameObject.transform;
+				//obj.transform.parent = tb.gameObject.transform;
+				obj.transform.SetParent (tb.gameObject.transform, false);
 				obj.gameObject.SetActive (true);
 				//}
 			}

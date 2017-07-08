@@ -7,9 +7,10 @@ using UnityEngine;
 public class Logger
 {
 	public static Text text;
+
 	public static void Log (string str){
 		if (text) {
-			text.text = str;
+			text.text += str+"/n";
 		} else
 			Debug.Log ("<color=yellow>" + str + "</color>");
 	}

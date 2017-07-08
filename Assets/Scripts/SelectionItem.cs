@@ -32,8 +32,9 @@ public class SelectionItem : MonoBehaviour {
 
 		Debug.Log (this.name + " clicked");
 		yield return Config.LoadConfig (this.name + "/config.xml");
-
-		SceneManager.LoadScene ("Scan");
+		Hashtable arg = new Hashtable ();
+		arg.Add ("name", this.name);
+		SceneManagerExtension.LoadScene ("Scan", arg);
 //		if (onClickHandler != null)
 //			onClickHandler.Invoke (this.name);
 	}
