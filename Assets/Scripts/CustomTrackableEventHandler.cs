@@ -119,7 +119,7 @@ namespace Vuforia
 //				touchRotate.enabled = false;
 //			}
 			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer)
-				mediaPlayer.Control.Stop();
+				mediaPlayer.Stop();
 		}
 
 //		#endregion // PRIVATE_METHODS
