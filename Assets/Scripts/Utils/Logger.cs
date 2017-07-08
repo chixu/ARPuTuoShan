@@ -12,7 +12,7 @@ public class Logger
 		if (text) {
 			text.text += str+"\n";
 		} else
-			//Debug.Log ("<color=yellow>" + str + "</color>");
-			Debug.LogError ("***<color=yellow>" + str + "</color>");
+			Debug.Log ("<color=yellow>" + str + "</color>");
+			//Debug.LogError ("***<color=yellow>" + str + "</color>");
 	}
 }

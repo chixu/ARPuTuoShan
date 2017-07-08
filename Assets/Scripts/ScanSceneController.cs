@@ -242,8 +242,10 @@ public class ScanSceneController : MonoBehaviour
 					cte.videoPath = GetAssetsPath(tb.TrackableName + ".mp4");
 					cte.mediaPlayer = mediaPlayer;
 				}
-				GameObject obj = (GameObject)GameObject.Instantiate (asset);
-				//obj.transform.parent = tb.gameObject.transform;
+				//GameObject obj = (GameObject)GameObject.Instantiate (asset);
+				GameObject prefab = asset as GameObject;
+				GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
+
 				obj.transform.SetParent (tb.gameObject.transform, false);
 				obj.gameObject.SetActive (true);
 				//}
