@@ -5,6 +5,12 @@ using System.Xml.Linq;
 using UnityEngine;
 using System;
 
+//public class ConfigStatus{
+//	public const string updated = "updated";
+//	public const string noupdate = "noupdate";
+//	public const string failed = "failed";
+//}
+
 public class Config
 {
 
@@ -12,15 +18,8 @@ public class Config
 	private static XElement remoteConfig;
 	public static bool forceBreak = false;
 	private static Action<int, int> fileLoadedHandler;
-
-
-	public static string GetVersion (XElement node ){
-		if (node.Attribute ("version") != null) {
-			return node.Attribute ("version").Value;
-		}
-		return "";
-	}
-
+	private static XElement tempConfig;
+	//public static string status;
 
 	public static string GetPlatformName () {
 		if (Application.platform == RuntimePlatform.Android)
@@ -42,29 +41,95 @@ public class Config
 		string platform = GetPlatformName ();
 		if (remoteConfig == null) {
 			Debug.Log ("remoteConfig = null");
-		} else if (localConfig == null || Config.GetVersion (localConfig) != Config.GetVersion (remoteConfig)) {
+		} else if (localConfig == null ) {
 			Debug.Log ("remoteConfig != null");
-			var nodes = remoteConfig.Elements ();
-			int count = 0;
-			foreach (XElement node in nodes)
-				count++;
-			if (fileLoadedHandler != null) {
-				fileLoadedHandler.Invoke (0, count);
-			}
-			int index = 0;
+//			var nodes = remoteConfig.Elements ();
+//			int count = 0;
+//			foreach (XElement node in nodes)
+//				count++;
+//			if (fileLoadedHandler != null) {
+//				fileLoadedHandler.Invoke (0, count);
+//			}
+//			int index = 0;
+//			foreach (XElement node in nodes) {
+//				index++;
+//				yield return Request.DownloadFile (node.Value.Replace ("{%platform%}", platform), node.Value.Replace ("{%platform%}", ""));
+//				if (forceBreak) {
+//					yield break;
+//				} else {
+//					if (fileLoadedHandler != null) {
+//						fileLoadedHandler.Invoke (index, count);
+//					}
+//				}
+//			}
+//			//Debug.Log ("remoteConfig: " + remoteConfig.ToString ());
+//			File.WriteAllText (Path.Combine(Application.persistentDataPath,  url), remoteConfig.ToString());
+			var nodes = remoteConfig.Element ("all").Elements();
+			List<string> names = new List<string> ();
 			foreach (XElement node in nodes) {
-				index++;
-				yield return Request.DownloadFile (node.Value.Replace ("{%platform%}", platform), node.Value.Replace ("{%platform%}", ""));
-				if (forceBreak) {
-					yield break;
-				} else {
-					if (fileLoadedHandler != null) {
-						fileLoadedHandler.Invoke (index, count);
+				names.Add (node.Value);
+			}
+			yield return LoadFiles (names, url);
+		} else{
+			string localVersion = xml.Version (localConfig);
+			string preVersion = xml.Attribute (remoteConfig, "preversion");
+			string remoteVersion = xml.Version (remoteConfig);
+			if (localVersion != remoteVersion) {
+				var nodes = remoteConfig.Element ("update").Elements();
+				List<string> updates = new List<string> ();
+				foreach (XElement node in nodes) {
+					updates.Add (node.Value);
+				}
+				int idx = url.IndexOf ("/");
+				string path = idx == -1 ? url : url.Substring (0, idx);
+				while (localVersion != preVersion) {
+					Config.tempConfig = null;
+					yield return Request.ReadRemote (path+"/version/" + preVersion +".xml", str => Config.tempConfig = XDocument.Parse(str).Root);
+					if (tempConfig == null) {
+						var all = remoteConfig.Element ("all").Elements ();
+						updates = new List<string> ();
+						foreach (XElement node in all) {
+							updates.Add (node.Value);
+						}
+						break;
+					} else {
+						preVersion = xml.Attribute (tempConfig, "preversion");
+						var updateNotes = tempConfig.Element ("update").Elements();
+						foreach (XElement node in updateNotes) {
+							Logger.Log (node.Value,"blue");
+							if(!updates.Contains(node.Value))
+								updates.Add (node.Value);
+						}
 					}
 				}
+				yield return LoadFiles (updates, url);;
 			}
-			//Debug.Log ("remoteConfig: " + remoteConfig.ToString ());
-			File.WriteAllText (Path.Combine(Application.persistentDataPath,  url), remoteConfig.ToString());
 		}
+	}
+
+	private static IEnumerator LoadFiles(List<string> names, string configurl){
+
+		for (int i = 0; i < names.Count; i++) {
+			Logger.Log (names [i], "green");
+		}
+		//var nodes = remoteConfig.Elements ();
+		string platform = GetPlatformName ();
+		int count = names.Count;
+		if (fileLoadedHandler != null) {
+			fileLoadedHandler.Invoke (0, count);
+		}
+		for (int i=0; i<count ; i++) {
+			string name = names [i];
+			yield return Request.DownloadFile (name.Replace ("{%platform%}", platform), name.Replace ("{%platform%}", ""));
+			if (forceBreak) {
+				yield break;
+			} else {
+				if (fileLoadedHandler != null) {
+					fileLoadedHandler.Invoke (i+1, count);
+				}
+			}
+		}
+		//Debug.Log ("remoteConfig: " + remoteConfig.ToString ());
+		File.WriteAllText (Path.Combine(Application.persistentDataPath,  configurl), remoteConfig.ToString());
 	}
 }

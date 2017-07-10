@@ -13,7 +13,7 @@ public class Language{
 public class I18n
 {
 	private static XElement data;
-	public static string language;
+	public static string language = Language.Chinese;
 
 	public static IEnumerator Initialise (string lang = "cn"){
 		language = lang;
