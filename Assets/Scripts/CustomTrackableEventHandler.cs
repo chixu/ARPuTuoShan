@@ -106,6 +106,10 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = true;
 //			}
+			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
+			foreach (Canvas ca in canvas) {
+				ca.gameObject.SetActive (true);
+			}
 			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer) {
 				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, videoPath, true);
 				mediaPlayer.Play ();
@@ -118,6 +122,10 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = false;
 //			}
+			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
+			foreach (Canvas ca in canvas) {
+				ca.gameObject.SetActive (false);
+			}
 			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer)
 				mediaPlayer.Stop();
 		}
