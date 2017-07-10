@@ -19,6 +19,7 @@ public class ScanSceneController : MonoBehaviour
 	public Material videoMaterial;
 	public Text title;
 	public Text description;
+	public GameObject planePrefab;
 
 //	private Config localConfig;
 //	private Config remoteConfig;
@@ -137,7 +138,7 @@ public class ScanSceneController : MonoBehaviour
 		yield return www;
 		if (www.error != null) {
 			//Log ("Unable to load prefabs");
-			yield break;
+			//yield break;
 		} else {
 			AssetBundle bundle = www.assetBundle;
 			string[] assetNames;
@@ -233,10 +234,10 @@ public class ScanSceneController : MonoBehaviour
 				tb.gameObject.AddComponent<TurnOffBehaviour> ();
 				UnityEngine.Object asset;
 				if(loadedAssets.ContainsKey (tb.TrackableName)){
-					asset =  loadedAssets [tb.TrackableName];
+					asset = loadedAssets [tb.TrackableName];
 				}else{
-					asset =  loadedAssets["plane"];
-					Renderer render = ((GameObject)loadedAssets ["plane"]).GetComponent<Renderer> ();
+					asset = planePrefab;
+					Renderer render = (planePrefab).GetComponent<Renderer> ();
 					render.material = videoMaterial;
 					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 					cte.videoPath = GetAssetsPath(tb.TrackableName + ".mp4");

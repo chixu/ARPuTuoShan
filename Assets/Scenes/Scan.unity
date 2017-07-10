@@ -125,7 +125,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -267, y: 0.000061035156}
+  m_AnchoredPosition: {x: -267, y: 0}
   m_SizeDelta: {x: 106, y: 98.3}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6283589
@@ -589,7 +589,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 24
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -657,7 +657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -1.3999928, y: -25.300014}
+  m_AnchoredPosition: {x: -1.3999928, y: -22}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1296012611
@@ -834,6 +834,8 @@ MonoBehaviour:
   videoMaterial: {fileID: 2100000, guid: 651a9a170ec8a7e40b2eb4cd24864619, type: 2}
   title: {fileID: 1522547155}
   description: {fileID: 973016732}
+  planePrefab: {fileID: 1479073523181540, guid: 5fb2ac04775f88d469e6718f2e8795af,
+    type: 2}
 --- !u!4 &1513859969
 Transform:
   m_ObjectHideFlags: 0
@@ -896,10 +898,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 34
+    m_FontSize: 26
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 3
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -929,8 +931,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -6.0999756}
-  m_SizeDelta: {x: 592, y: 92.2}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 592, y: 90}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1621094129
 GameObject:
