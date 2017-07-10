@@ -21,11 +21,11 @@ public class ScanSceneController : MonoBehaviour
 	public Text description;
 	public GameObject planePrefab;
 
-//	private Config localConfig;
-//	private Config remoteConfig;
+	//	private Config localConfig;
+	//	private Config remoteConfig;
 	private Mappings mappings;
 	private string dataSetName = "trackings.xml";
-	private Dictionary<string, UnityEngine.Object> loadedAssets = new Dictionary<string, UnityEngine.Object> ();
+	private Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
 	private string prevSceneName;
 
@@ -50,73 +50,74 @@ public class ScanSceneController : MonoBehaviour
 		public Mapping[] mappings;
 	}
 
-//	IEnumerator ReadLocalConfig ()
-//	{
-//		string url = GetConfigUrl ();
-//		WWW www = new WWW ("file:///" + GetConfigUrl (false));
-//		yield return www;
-//		if (!String.IsNullOrEmpty (www.error)) {
-//			Log ("unabled to load Local Config");
-//		} else {
-//			Log ("Local Config Loaded");
-//			Log (www.text);
-//			localConfig = JsonUtility.FromJson<Config> (www.text);
-//		}
-//	}
-//
-//	IEnumerator ReadRemoteConfig ()
-//	{
-//		string url = GetConfigUrl (true);
-//		Log ("loading " + url);
-//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
-//		yield return www.Send ();
-//		if (www.isError) {
-//			Log ("unabled to load Remote Config");
-//		} else {
-//			Log ("Remote Config Loaded");
-//			Log (www.downloadHandler.text);
-//			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
-//		}
-//	}
+	//	IEnumerator ReadLocalConfig ()
+	//	{
+	//		string url = GetConfigUrl ();
+	//		WWW www = new WWW ("file:///" + GetConfigUrl (false));
+	//		yield return www;
+	//		if (!String.IsNullOrEmpty (www.error)) {
+	//			Log ("unabled to load Local Config");
+	//		} else {
+	//			Log ("Local Config Loaded");
+	//			Log (www.text);
+	//			localConfig = JsonUtility.FromJson<Config> (www.text);
+	//		}
+	//	}
+	//
+	//	IEnumerator ReadRemoteConfig ()
+	//	{
+	//		string url = GetConfigUrl (true);
+	//		Log ("loading " + url);
+	//		UnityWebRequest www = UnityWebRequest.Get (Utils.ApplyRandomVersion (url));
+	//		yield return www.Send ();
+	//		if (www.isError) {
+	//			Log ("unabled to load Remote Config");
+	//		} else {
+	//			Log ("Remote Config Loaded");
+	//			Log (www.downloadHandler.text);
+	//			remoteConfig = JsonUtility.FromJson<Config> (www.downloadHandler.text);
+	//		}
+	//	}
 
-//	IEnumerator DownloadFile (string url, string dest)
-//	{
-//		WWW www = new WWW (Utils.ApplyRandomVersion (remoteUrl + "/" + url));
-//		yield return www;
-//		dest = Application.persistentDataPath + "/" + dest;
-//		Log (dest);
-//		Log (Path.GetDirectoryName (dest));
-//		if (!Directory.Exists (Path.GetDirectoryName (dest)))
-//			Directory.CreateDirectory (Path.GetDirectoryName (dest));
-//		File.WriteAllBytes (dest, www.bytes);
-//	}
-//
-//
-//	public string platformName {
-//		get { 
-//			if (Application.platform == RuntimePlatform.Android)
-//				return "Android";
-//			else if (Application.platform == RuntimePlatform.IPhonePlayer)
-//				return "IOS";
-//			else
-//				return "Windows";
-//		}
-//	}
+	//	IEnumerator DownloadFile (string url, string dest)
+	//	{
+	//		WWW www = new WWW (Utils.ApplyRandomVersion (remoteUrl + "/" + url));
+	//		yield return www;
+	//		dest = Application.persistentDataPath + "/" + dest;
+	//		Log (dest);
+	//		Log (Path.GetDirectoryName (dest));
+	//		if (!Directory.Exists (Path.GetDirectoryName (dest)))
+	//			Directory.CreateDirectory (Path.GetDirectoryName (dest));
+	//		File.WriteAllBytes (dest, www.bytes);
+	//	}
+	//
+	//
+	//	public string platformName {
+	//		get {
+	//			if (Application.platform == RuntimePlatform.Android)
+	//				return "Android";
+	//			else if (Application.platform == RuntimePlatform.IPhonePlayer)
+	//				return "IOS";
+	//			else
+	//				return "Windows";
+	//		}
+	//	}
 
 	//	IEnumerator WriteFile(string path, byte[] data){
 	//		File.WriteAllBytes(path, data);
 	//	}
 
-//	string GetConfigUrl (bool isRemote = false)
-//	{
-//		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
-//	}
+	//	string GetConfigUrl (bool isRemote = false)
+	//	{
+	//		return (isRemote ? remoteUrl : Application.persistentDataPath) + "/" + configName;
+	//	}
 
-//	string GetLocalAssetName (string fileName)
-//	{
-//		return Application.persistentDataPath + "/" + fileName;
-//	}
-	string GetAssetsPath(string str, bool isFile = false){
+	//	string GetLocalAssetName (string fileName)
+	//	{
+	//		return Application.persistentDataPath + "/" + fileName;
+	//	}
+	string GetAssetsPath (string str, bool isFile = false)
+	{
 		return (isFile ? "file:///" : "") + Application.persistentDataPath + "/" + prevSceneName + "/" + str;
 	}
 
@@ -130,17 +131,23 @@ public class ScanSceneController : MonoBehaviour
 //		} else {
 //			mappings = JsonUtility.FromJson<Mappings> (www.text);
 //		}
-		title.text = I18n.Translate("scan_title");
-		description.text = I18n.Translate("scan_desc");
+		loadedAssets = new Dictionary<string, UnityEngine.Object> ();
+		title.text = I18n.Translate ("scan_title");
+		description.text = I18n.Translate ("scan_desc");
 		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
-		Debug.Log (prevSceneName);
-		WWW www = new WWW (GetAssetsPath(fileName, true));
-		yield return www;
-		if (www.error != null) {
-			//Log ("Unable to load prefabs");
-			//yield break;
+		AssetBundle bundle = null;
+		if (!AssetBundleManager.bundles.ContainsKey (prevSceneName)) {
+			WWW www = new WWW (GetAssetsPath (fileName, true));
+			yield return www;
+			if (www.error == null) {
+				bundle = www.assetBundle;
+				AssetBundleManager.bundles.Add (prevSceneName, bundle);
+			}
 		} else {
-			AssetBundle bundle = www.assetBundle;
+			bundle = AssetBundleManager.bundles [prevSceneName];
+		}
+		if (bundle != null) {
+			
 			string[] assetNames;
 			try {
 				assetNames = bundle.GetAllAssetNames ();
@@ -191,7 +198,7 @@ public class ScanSceneController : MonoBehaviour
 //		}
 		//Vuforia.VuforiaRuntime.Instance.InitPlatform();
 		//Vuforia.VuforiaRuntime.Instance.InitVuforia();
-		StartCoroutine(StartGame ());
+		StartCoroutine (StartGame ());
 	}
 
 	void LoadDataSet ()
@@ -201,7 +208,7 @@ public class ScanSceneController : MonoBehaviour
 
 		DataSet dataSet = objectTracker.CreateDataSet ();
 		//Debug.Log (Application.persistentDataPath + "/" + dataSetName);
-		if (dataSet.Load (GetAssetsPath(dataSetName), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
+		if (dataSet.Load (GetAssetsPath (dataSetName), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
 			//if (dataSet.Load (dataSetName)) {             
 			objectTracker.Stop ();  // stop tracker so that we can add new dataset
 
@@ -233,14 +240,14 @@ public class ScanSceneController : MonoBehaviour
 				tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
 				tb.gameObject.AddComponent<TurnOffBehaviour> ();
 				UnityEngine.Object asset;
-				if(loadedAssets.ContainsKey (tb.TrackableName)){
+				if (loadedAssets.ContainsKey (tb.TrackableName)) {
 					asset = loadedAssets [tb.TrackableName];
-				}else{
+				} else {
 					asset = planePrefab;
 					Renderer render = (planePrefab).GetComponent<Renderer> ();
 					render.material = videoMaterial;
 					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
-					cte.videoPath = GetAssetsPath(tb.TrackableName + ".mp4");
+					cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
 					cte.mediaPlayer = mediaPlayer;
 				}
 				//GameObject obj = (GameObject)GameObject.Instantiate (asset);
@@ -256,13 +263,14 @@ public class ScanSceneController : MonoBehaviour
 		}
 	}
 
-	public void OnBackClick(){
+	public void OnBackClick ()
+	{
 		Debug.Log ("back Clicked");
 		SceneManager.LoadScene ("Selection");
 	}
-//	void Log (string str)
-//	{
-//		if (!String.IsNullOrEmpty (str))
-//			text.text += "\n" + str;
-//	}
+	//	void Log (string str)
+	//	{
+	//		if (!String.IsNullOrEmpty (str))
+	//			text.text += "\n" + str;
+	//	}
 }
