@@ -112,6 +112,8 @@ namespace Vuforia
 			}
 			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer) {
 				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, videoPath, true);
+				VideoController.instant._videoSeekSlider.gameObject.SetActive (true);
+				mediaPlayer.Rewind (false);
 				mediaPlayer.Play ();
 			}
 		}
@@ -126,8 +128,10 @@ namespace Vuforia
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (false);
 			}
-			if(!string.IsNullOrEmpty(videoPath) && mediaPlayer)
-				mediaPlayer.Stop();
+			if (!string.IsNullOrEmpty (videoPath) && mediaPlayer) {
+				VideoController.instant._videoSeekSlider.gameObject.SetActive (false);
+				mediaPlayer.Stop ();
+			}
 		}
 
 //		#endregion // PRIVATE_METHODS

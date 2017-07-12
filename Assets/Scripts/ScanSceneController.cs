@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -295,4 +295,7 @@ public class ScanSceneController : MonoBehaviour
 	//		if (!String.IsNullOrEmpty (str))
 	//			text.text += "\n" + str;
 	//	}
+	void Update(){
+		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
+	}
 }
