@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using Vuforia;
 using RenderHeads.Media.AVProVideo;
 using UnityEngine.SceneManagement;
+using System.Xml.Linq;
 
 public class ScanSceneController : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class ScanSceneController : MonoBehaviour
 	private Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
 	private string prevSceneName;
+	private XElement itemInfos;
 
 	[System.Serializable]
 	public class Config
@@ -131,10 +133,17 @@ public class ScanSceneController : MonoBehaviour
 //		} else {
 //			mappings = JsonUtility.FromJson<Mappings> (www.text);
 //		}
+
+
+
+
 		loadedAssets = new Dictionary<string, UnityEngine.Object> ();
 		title.text = I18n.Translate ("scan_title");
 		description.text = I18n.Translate ("scan_desc");
 		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+
+		yield return Request.ReadPersistent (prevSceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
+
 		AssetBundle bundle = null;
 		if (!AssetBundleManager.bundles.ContainsKey (prevSceneName)) {
 			WWW www = new WWW (GetAssetsPath (fileName, true));
@@ -147,7 +156,6 @@ public class ScanSceneController : MonoBehaviour
 			bundle = AssetBundleManager.bundles [prevSceneName];
 		}
 		if (bundle != null) {
-			
 			string[] assetNames;
 			try {
 				assetNames = bundle.GetAllAssetNames ();
@@ -255,6 +263,7 @@ public class ScanSceneController : MonoBehaviour
 				GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
 
 				obj.transform.SetParent (tb.gameObject.transform, false);
+				ApplyItemInfo (tb.TrackableName, obj);
 				obj.gameObject.SetActive (true);
 				//}
 			}
@@ -262,6 +271,19 @@ public class ScanSceneController : MonoBehaviour
 			Debug.LogError ("<color=yellow>Failed to load dataset: '" + dataSetName + "'</color>");
 		}
 	}
+
+	void ApplyItemInfo(string name, GameObject obj){
+		if (itemInfos == null)
+			return;
+		XElement info = Xml.GetChildByAttribute (itemInfos, "id", name);
+		if (info == null)
+			return;
+		Vector3 scale = obj.transform.localScale;
+		Vector3 pos = obj.transform.localPosition;
+		obj.transform.localScale = new Vector3 (scale.x * Xml.Float (info, "scalex", 1), scale.y * Xml.Float (info, "scaley", 1), scale.z * Xml.Float (info, "scalez", 1));
+		obj.transform.localPosition = new Vector3 (pos.x + Xml.Float (info, "x"), pos.y + Xml.Float (info, "y"), pos.z + Xml.Float (info, "z"));
+	}
+
 
 	public void OnBackClick ()
 	{

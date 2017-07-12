@@ -71,9 +71,9 @@ public class Config
 			}
 			yield return LoadFiles (names, url);
 		} else{
-			string localVersion = xml.Version (localConfig);
-			string preVersion = xml.Attribute (remoteConfig, "preversion");
-			string remoteVersion = xml.Version (remoteConfig);
+			string localVersion = Xml.Version (localConfig);
+			string preVersion = Xml.Attribute (remoteConfig, "preversion");
+			string remoteVersion = Xml.Version (remoteConfig);
 			if (localVersion != remoteVersion) {
 				var nodes = remoteConfig.Element ("update").Elements();
 				List<string> updates = new List<string> ();
@@ -93,7 +93,7 @@ public class Config
 						}
 						break;
 					} else {
-						preVersion = xml.Attribute (tempConfig, "preversion");
+						preVersion = Xml.Attribute (tempConfig, "preversion");
 						var updateNotes = tempConfig.Element ("update").Elements();
 						foreach (XElement node in updateNotes) {
 							Logger.Log (node.Value,"blue");
